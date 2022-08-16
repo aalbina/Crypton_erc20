@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 contract Token {
     string public name = "Crypton ERC-20 task";
     string public symbol = "CET";
-    uint8 public decimals = 4;
+    uint8 public decimals = 18;
 
     // The fixed amount of tokens stored in an unsigned integer type variable.
     uint256 public totalSupply = 10000000;
@@ -16,8 +16,8 @@ contract Token {
     mapping(address => uint256) public balances;
     mapping(address => mapping(address => uint256)) private _allowance;
 
-    event Transfer(address indexed _from, address indexed _to, uint256 _value);
-    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
 
     /**
@@ -68,15 +68,15 @@ contract Token {
     /**
     * Transfers _value amount of tokens from address _from to address _to, and MUST fire the Transfer event.
     */
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
-        require(balances[_from] >= _value, "Not enough tokens");
-        require(_allowance[_from][msg.sender] >= _value, "Not allowed");
+    function transferFrom(address from, address to, uint256 value) public returns (bool) {
+        require(balances[from] >= value, "Not enough tokens");
+        require(_allowance[from][msg.sender] >= value, "Not allowed");
 
-        balances[_from] -= _value;
-        balances[_to] += _value;
-        _allowance[_from][msg.sender] -= _value;
+        balances[from] -= value;
+        balances[to] += value;
+        _allowance[from][msg.sender] -= value;
 
-        emit Transfer(_from, _to, _value);
+        emit Transfer(from, to, value);
         return true;
     }
 
@@ -85,12 +85,12 @@ contract Token {
     * Allows _spender to withdraw from your account multiple times, up to the _value amount.
     * If this function is called again it overwrites the current allowance with _value.
     */
-    function approve(address _spender, uint256 _value) public returns (bool) {
-        require(balances[msg.sender] >= _value, "Not enough tokens");
+    function approve(address spender, uint256 value) public returns (bool) {
+        require(balances[msg.sender] >= value, "Not enough tokens");
 
-        _allowance[msg.sender][_spender] = _value;
+        _allowance[msg.sender][spender] = value;
 
-        emit Approval(msg.sender, _spender, _value);
+        emit Approval(msg.sender, spender, value);
         return true;
     }
 
@@ -98,21 +98,21 @@ contract Token {
     /**
     * Returns the amount which _spender is still allowed to withdraw from _owner.
     */
-    function allowance(address _owner, address _spender) public view returns (uint256) {
-        return _allowance[_owner][_spender];
+    function allowance(address token_owner, address spender) public view returns (uint256) {
+        return _allowance[token_owner][spender];
     }
 
-    function _burn(uint256 _value) public returns (bool) {
+    function burn(uint256 value) public returns (bool) {
         require(owner == msg.sender, "Not owner");
 
-        totalSupply -= _value;
+        totalSupply -= value;
         return true;
     }
 
-    function _mint(uint256 _value) public returns (bool) {
+    function mint(uint256 value) public returns (bool) {
         require(owner == msg.sender, "Not owner");
 
-        totalSupply += _value;
+        totalSupply += value;
         return true;
     }
 

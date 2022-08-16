@@ -7,7 +7,7 @@ describe("Token", function () {
     let token: Contract;
     let totalSupply = 10000000;
     let sendAmount = 50;
-    let decimals = 4;
+    let decimals = 18;
 
     beforeEach(async function () {
         Token = await ethers.getContractFactory("Token");
@@ -93,7 +93,7 @@ describe("Token", function () {
         it("Should burn tokens", async function () {
             const [owner] = await ethers.getSigners();
 
-            await token._burn(sendAmount);
+            await token.burn(sendAmount);
 
             expect(await token.totalSupply()).to.equal(totalSupply - sendAmount);
         });
@@ -101,13 +101,13 @@ describe("Token", function () {
             const [owner, addr1] = await ethers.getSigners();
 
             await expect(
-                token.connect(addr1)._burn(sendAmount)
+                token.connect(addr1).burn(sendAmount)
             ).to.be.revertedWith("Not owner");
         });
         it("Should mint tokens", async function () {
             const [owner] = await ethers.getSigners();
 
-            await token._mint(sendAmount);
+            await token.mint(sendAmount);
 
             expect(await token.totalSupply()).to.equal(totalSupply + sendAmount);
         });
@@ -115,7 +115,7 @@ describe("Token", function () {
             const [owner, addr1] = await ethers.getSigners();
 
             await expect(
-                token.connect(addr1)._mint(sendAmount)
+                token.connect(addr1).mint(sendAmount)
             ).to.be.revertedWith("Not owner");
         });
     });
